@@ -2,30 +2,9 @@
 library(stringr)
 library(ggplot2)
 library(dplyr)
-
-#Figure 1
-vars <- c("#DF536B", "#2297e6", "#F5C710")
-Density<-read.csv("DensityRevision.csv")
-ggplot(Density, aes(x=Habitat, y=mean, color=Species))+geom_point(size=3)+geom_errorbar(aes(ymin=mean-se, ymax=mean+se), 
-                                                                                        data=Density, width=0.2)+
-  facet_grid(~Season, scales="free_x")+
-  theme(strip.background=element_rect(color="black", fill="darkslategray3"), panel.border = element_rect(colour='black', fill='NA'), 
-        panel.background = element_rect(fill='gray97'), panel.grid = element_line(colour = NA), panel.spacing = unit(1, "lines"),
-        legend.key = element_rect(fill='white'), legend.position="bottom", 
-        legend.text=element_text(size=12), legend.title = element_text(size=12),
-        axis.text=element_text(size=14), axis.title.x = element_blank(),axis.text.x = element_text(size=12),
-        axis.title.y = element_text(size=14, vjust=3.9), strip.text = element_text(size=14, face="bold"))+
-  theme(plot.margin=unit(c(0.3,0.3,0.5,0.5), "cm"), axis.ticks.length.x =unit(.25, "cm"))+
-  scale_y_continuous(breaks=c(2,4,6,8,10), limits = c(0,10))+
-  labs(y = expression(paste("Estimated density  ", "(animals/km "^2 ,")")))+scale_color_manual(values=vars)+
-  scale_x_discrete(labels=c('Bottomland\nhardwood','Upland\npine', 'Riparian\nforest', 'Isolated\nwetlands'))
-
-
-
-
+#Figure 2
 GridYear<-read.csv("GridYearRevision.csv")
 GridYear$Site<-paste(GridYear$Grid, GridYear$Year, GridYear$Season, sep=" ")
-
 opp<-subset(GridYear, Species=="Opossum")
 racc<-subset(GridYear, Species=="Raccoon")
 opp<-opp %>% arrange(Site)
@@ -51,7 +30,6 @@ textPart1 <- "paste(italic(r), \" = 0.667\")"
 textPart2 <- "paste(italic(p), \" < 0.001\")" 
 petal.lm<-lm(Opossum~Raccoon, alltot)
 
-#Figure 2
 ggplot(alltot, aes(x = Raccoon, y = Opossum, color=Habitat, label=Grid))+geom_point(size=3)+
   scale_color_manual(values=vars)+
   geom_abline(slope = coef(petal.lm)[["Raccoon"]], 
@@ -72,4 +50,20 @@ ggplot(alltot, aes(x = Raccoon, y = Opossum, color=Habitat, label=Grid))+geom_po
   annotate("text", x=10, y=1.8, label= paste(textPart1), parse=TRUE, size=5)+
   annotate("text", x=10, y=0.6, label= paste(textPart2), parse=TRUE, size=5)
 
+#Figure 3
+vars <- c("#DF536B", "#2297e6", "#F5C710")
+Density<-read.csv("DensityRevision.csv")
+ggplot(Density, aes(x=Habitat, y=mean, color=Species))+geom_point(size=3)+geom_errorbar(aes(ymin=mean-se, ymax=mean+se), 
+                                                                                        data=Density, width=0.2)+
+  facet_grid(~Season, scales="free_x")+
+  theme(strip.background=element_rect(color="black", fill="darkslategray3"), panel.border = element_rect(colour='black', fill='NA'), 
+        panel.background = element_rect(fill='gray97'), panel.grid = element_line(colour = NA), panel.spacing = unit(1, "lines"),
+        legend.key = element_rect(fill='white'), legend.position="bottom", 
+        legend.text=element_text(size=12), legend.title = element_text(size=12),
+        axis.text=element_text(size=14), axis.title.x = element_blank(),axis.text.x = element_text(size=12),
+        axis.title.y = element_text(size=14, vjust=3.9), strip.text = element_text(size=14, face="bold"))+
+  theme(plot.margin=unit(c(0.3,0.3,0.5,0.5), "cm"), axis.ticks.length.x =unit(.25, "cm"))+
+  scale_y_continuous(breaks=c(2,4,6,8,10), limits = c(0,10))+
+  labs(y = expression(paste("Estimated density  ", "(animals/km "^2 ,")")))+scale_color_manual(values=vars)+
+  scale_x_discrete(labels=c('Bottomland\nhardwood','Upland\npine', 'Riparian\nforest', 'Isolated\nwetlands'))
 
